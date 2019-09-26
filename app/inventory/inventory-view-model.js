@@ -2,8 +2,8 @@ const observableModule = require("tns-core-modules/data/observable");
 
 const SelectedPageService = require("../shared/selected-page-service");
 
-function SettingsViewModel() {
-    SelectedPageService.getInstance().updateSelectedPage("Settings");
+function HomeViewModel() {
+    SelectedPageService.getInstance().updateSelectedPage("inventory");
 
     const viewModel = observableModule.fromObject({
         /* Add your view model properties here */
@@ -12,4 +12,4 @@ function SettingsViewModel() {
     return viewModel;
 }
 
-module.exports = SettingsViewModel;
+module.exports = HomeViewModel;
