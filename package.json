@@ -15,10 +15,10 @@
     "lint": "eslint \"app/**/*.js\""
   },
   "dependencies": {
-    "nativescript-theme-core": "~1.0.6",
-    "nativescript-ui-sidedrawer": "~7.0.0",
+    "nativescript-theme-core": "^2.0.21",
+    "nativescript-ui-sidedrawer": "^7.0.2",
     "rxjs": "^6.4.0",
-    "tns-core-modules": "~6.0.0"
+    "tns-core-modules": "^6.1.1"
   },
   "devDependencies": {
     "eslint": "~5.8.0",
