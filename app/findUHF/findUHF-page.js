@@ -1,6 +1,6 @@
 const app = require("tns-core-modules/application");
 
-const HomeViewModel = require("./inventory-view-model");
+const HomeViewModel = require("./findUHF-view-model");
 
 function onNavigatingTo(args) {
     const page = args.object;

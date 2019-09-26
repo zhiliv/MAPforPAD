@@ -11,30 +11,28 @@ https://docs.nativescript.org/ui/professional-ui-components/SideDrawer/getting-s
 
   <nsDrawer:RadSideDrawer.drawerContent>
     <GridLayout rows="auto, *" class="sidedrawer sidedrawer-left">
-      <StackLayout class="sidedrawer-header">
-        <Label class="sidedrawer-header-image fa" text="&#xf2bd;" />
-        <Label class="sidedrawer-header-brand" text="User Name" />
-        <Label class="footnote" text="username@mail.com" />
-      </StackLayout>
 
-      <ScrollView row="1" class="sidedrawer-content">
+      <ScrollView row="1" col="4" class="sidedrawer-content">
         <StackLayout>
-          <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'inventory' ? ' selected': '') }}" route="inventory/inventory-page" title="inventory" tap="onNavigationItemTap">
+
+          <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'findUHF' ? ' selected': '') }}" route="findUHF/findUHF-page" title="findUHF" tap="onNavigationItemTap">
             <Label row="0" col="0" text="&#xf015;" class="fa" />
-            <Label row="0" col="1" text="inventory" class="p-r-10" />
+            <Label row="0" col="1" text="Поиск местонахождения метки" textWrap="true" class="p-r-10" />
           </GridLayout>
 
           <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'instruction' ? ' selected': '') }}" route="instruction/instruction-page" title="instruction" tap="onNavigationItemTap">
             <Label row="0" col="0" text="&#xf1ea;" class="fa" />
-            <Label row="0" col="1" text="instruction" class="p-r-10" />
+            <Label row="0" col="1" text="Инструкция" class="p-r-10" />
           </GridLayout>
 
         </StackLayout>
+
       </ScrollView>
+
     </GridLayout>
   </nsDrawer:RadSideDrawer.drawerContent>
 
   <nsDrawer:RadSideDrawer.mainContent>
-    <Frame defaultPage="instruction/instruction-page"></Frame>
+    <Frame defaultPage="findUHF/findUHF-page"></Frame>
   </nsDrawer:RadSideDrawer.mainContent>
 </nsDrawer:RadSideDrawer>
