@@ -44,3 +44,4 @@ C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\d97e1c6ed
 C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\dd99733336f519b9a7d75321222a2ab5\classes.jar
 C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\e1ca501db4cc311e4c87c3a227a2bdef\classes.jar
 C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\ebed843dac0831c41060bc0afb19450e\classes.jar
+C:\develop\MAPforPAD\platforms\android\app\build\intermediates\javac\debug
