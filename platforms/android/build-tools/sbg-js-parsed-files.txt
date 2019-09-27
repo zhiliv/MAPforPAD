@@ -1,0 +1,4 @@
+C:\develop\MAPforPAD\platforms\android\app\src\main\assets\app\bundle.js
+C:\develop\MAPforPAD\platforms\android\app\src\main\assets\app\runtime.js
+C:\develop\MAPforPAD\platforms\android\app\src\main\assets\app\tns-java-classes.js
+C:\develop\MAPforPAD\platforms\android\app\src\main\assets\app\vendor.js
