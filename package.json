@@ -12,9 +12,12 @@
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
   "dependencies": {
+    "async": "^3.1.0",
     "nativescript-theme-core": "^2.0.22",
     "nativescript-webview-interface": "^1.4.3",
-    "tns-core-modules": "^6.1.1"
+    "q": "^1.5.1",
+    "tns-core-modules": "^6.1.1",
+    "underscore": "^1.9.1"
   },
   "devDependencies": {
     "nativescript-dev-webpack": "~1.1.0"
