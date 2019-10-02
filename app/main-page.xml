@@ -7,4 +7,4 @@
       <WebView id="webView" row="3" col="0" colSpan="2" loadStarted="onLoadStarted" loadFinished="onLoadFinished" />
     </Page>
   </GridLayout>
-</Page>
+</Page>    

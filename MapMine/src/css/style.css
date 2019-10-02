@@ -1,0 +1,16 @@
+.button-menu-last, .button-menu{
+  width: 100%;
+}
+
+.button-menu{
+  border-bottom: 3px solid gray;
+}
+
+.menu{
+  border-right: 2px solid gray;
+  background: rgb(231, 231, 231);
+}
+
+.group-menu{
+  width: 100%;
+}
