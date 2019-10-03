@@ -20,13 +20,21 @@
         <hr>
         <div class="btn-group-vertical group-menu">
           <button type="button" class="btn btn-primary button-menu" id="newLabel">Добавление метки</button>
-          <button type="button" class="btn btn-primary button-menu">Показать все метки</button>
+          <button type="button" class="btn btn-primary button-menu" id="showAllLabel">Показать все метки</button>
           <button type="button" class="btn btn-primary button-menu">Поиск метки</button>
           <button type="button" class="btn btn-primary button-menu">Настройка</button>
           <button type="button" class="btn btn-primary button-menu-last">Закрыть</button>
         </div>
       </div>
-      <div class="col-9">
+      <div class="col-9 blc-map">
+        <div class="row alert-success">
+          <div class="col-9 alert-success text-center">
+            <label for="">Укажите точку и нажмите кнопку "Добавить"</label>
+          </div>
+          <div class="col-3">
+            <button type="button" class="btn btn-large btn-block btn-success">button</button>
+          </div>
+        </div>
         <div id="map">
         </div>
       </div>
@@ -47,7 +55,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-              <button type="button" class="btn btn-primary apply">Да</button>
+              <button type="button" class="btn btn-primary" onClick="applyConfirmationAddLabel()">Да</button>
             </div>
           </div>
         </div>
@@ -67,7 +75,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-                <button type="button" class="btn btn-primary">Да</button>
+                <button type="button" class="btn btn-primary" onClick="applyConfirmationShowAlLabel()" id="">Да</button>
               </div>
             </div>
           </div>

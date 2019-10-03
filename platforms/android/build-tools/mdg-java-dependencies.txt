@@ -1,4 +1,4 @@
-C:\Android\android-sdk/platforms/android-28/android.jar
+C:\Android\android-sdk/platforms/android-29/android.jar
 C:\develop\MAPforPAD\node_modules\nativescript-webview-interface\platforms\android\WebViewInterface.jar
 C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\0ae86b63b8f280e33be4880aed18d50e\classes.jar
 C:\develop\MAPforPAD\platforms\android\app\build\exploded-dependencies\0f11d3768e1a66dcbdf63d093aaa1864\classes.jar

@@ -7,7 +7,7 @@
 7    <uses-sdk
 8        android:minSdkVersion="17"
 8-->C:\develop\MAPforPAD\platforms\android\app\src\main\AndroidManifest.xml
-9        android:targetSdkVersion="28" />
+9        android:targetSdkVersion="29" />
 9-->C:\develop\MAPforPAD\platforms\android\app\src\main\AndroidManifest.xml
 10
 11    <supports-screens
