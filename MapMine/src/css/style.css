@@ -14,3 +14,8 @@
 .group-menu{
   width: 100%;
 }
+
+.alert-add, .scan-label{
+  padding: 4px 0px 4px 0px;
+  display: none;
+}

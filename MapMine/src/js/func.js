@@ -3,13 +3,21 @@
  * @module func
  */
 
+//переменная для хранения карты
 var map;
+//список меток
 var listMarker = [];
+//последний маркер
 var marker;
+//обмен с WEbView
 var oWebViewInterface = window.nsWebViewInterface;
 
 //при загрузке страницы
 $(document).ready(function() {
+    //установк высоты карты
+    heightBody();
+    //загрузка карты в элемент
+    LoadlayerMap();
     //обработка нажатия кнопок меню
     clickButtonMenu();
 });
@@ -33,16 +41,73 @@ function clickButtonMenu() {
 
 /**
  * При подтвержении добавления новой метки
-  */
-function applyConfirmationAddLabel(){
-  clearMapFromLabel();
+ * @function applyConfirmationAddLabel
+ */
+function applyConfirmationAddLabel() {
+    //идентификатор формы
+    var idForm = '#confirmation-add-label';
+    //скрыть форму
+    hideForm(idForm);
+    //класс элемента для отображения
+    var element = '.scan-label';
+    //показать уведомление
+    showAlert(element);
+    //очистка карты от меток
+    clearMapFromLabel();
+    //установка высоты карты
+    setHeightMap();
 }
 
 /**
+ * Скрыть модульное окно
+ * @function hideForm
+ * @param {String} id Идентификатор формы
+ */
+function hideForm(id) {
+    //скрыть форму
+    $(id).modal('toggle');
+}
+
+/**
+ * Показать подсказку
+ * @function showAlert
+ * @param {String} element Указание элемента для отображения
+ */
+function showAlert(element) {
+    //отобразить элемент
+    $(element).css('display', 'flex');
+}
+
+/**
+ * Скрыть подкскаску
+ * @function hideAlert
+ * @param {String} element  Указание элемента для скрытия
+ */
+function hideAlert(element) {
+    //скрыть элемент
+    $(element).css('display', 'none');
+}
+
+/**
+ * Установка высоты карты с подсказкой
+ * @function setHeightMap
+ * @param {String} element Указание элемента для получения его высоты
+ */
+function setHeightMap(element) {
+    var heightAlert = $(element).height();
+    $('#map').height($(window).height() - (heightAlert + heightAlert * 0.2));
+}
+
+function ShowFormAddLabel() {}
+
+/**
  * При подтверждении "Показать все метки"
-  */
+ * @function applyConfirmationShowAlLabel
+ */
 function applyConfirmationShowAlLabel() {
+    //оистка карты от меток
     clearMapFromLabel();
+    //получение всех меток из БД
     getAllLabel();
 }
 
@@ -51,8 +116,11 @@ function applyConfirmationShowAlLabel() {
  * @function getAllLabel
  */
 function getAllLabel() {
+    //отправка события для получения меток
     oWebViewInterface.emit('getAllLabel');
+    //прослушивание события для получения всех меток
     oWebViewInterface.on('resultAllLabel', function(res) {
+        //добалвение всех меток на карту
         addAllMarker(res);
     });
     //addAllMarker(arrLabels)
@@ -62,18 +130,33 @@ function getAllLabel() {
         }) */
 }
 
+/**
+ * Добавление всех маркеров
+ * @function addAllMarker
+ * @param {Array} list Массив со всеми метками из БД
+ */
 function addAllMarker(list) {
+    //очищение массива для хранения маркеров
     listMarker = [];
+    //проверка длины массива
     if (list.length > 0) {
+        //обход всех щначений в цикле
         for (i = 0; i <= list.length - 1; i++) {
+            //создание макркера на карте
             createMarker(list[i]);
         }
     }
 }
 
+/**
+ * Создание маркера
+ * @function createMarker
+ * @param {Object} data Данные о метке
+ */
 function createMarker(data) {
+    //создание нового маркера на карте
     marker = L.marker([data.lat, data.lon]).addTo(map);
-    console.log(marker);
+    //доблавение маркера в массив
     listMarker.push(marker);
 }
 
@@ -82,13 +165,20 @@ function createMarker(data) {
  * @function clearMapFromLabel
  */
 function clearMapFromLabel() {
+    //удлаение элемента хранящего карту
     $('#map').remove();
+    //создание элемента для хранеия карты
     $(' <div id="map"></div>').appendTo('.blc-map');
+    //установка высоты карты
     heightBody();
+    //загрузка карты в элемент
     LoadlayerMap();
 }
 
-/* вывод карты  */
+/**
+ * Формирование карты и вовод ее в элемент #map
+ * @function LoadlayerMap
+ */
 function LoadlayerMap() {
     var image = 'map'; //папка с картами
     var width = 6025;
@@ -112,27 +202,25 @@ function LoadlayerMap() {
     map = new L.Map('map', {
         maxBounds: bounds
     });
-    /* ЗАГРУЗКА КАРТЫ */
-    function LoadMap() {
-        L.tileLayer(image + '/{z}-{x}-{y}.jpg', {
-            maxZoom: maxLevel,
-            minZoom: minLevel,
-            opacity: 1.0,
-            zIndex: 1,
-            noWrap: true,
-            bounds: bounds
-        }).addTo(map);
-    }
-    LoadMap(); //загрузка карты
+    L.tileLayer(image + '/{z}-{x}-{y}.jpg', {
+        maxZoom: maxLevel,
+        minZoom: minLevel,
+        opacity: 1.0,
+        zIndex: 1,
+        noWrap: true,
+        bounds: bounds
+    }).addTo(map);
+
     var zoom = map.getBoundsZoom(bounds);
     var center = new L.latLng(centerLat, centerLon);
 
     map.setView(center, 2);
 }
 
-heightBody();
-LoadlayerMap();
-
+/**
+ * Получение высоты экрана и установка высоты для карты
+ * @function heightBody
+ */
 function heightBody() {
     $('#map').height($(window).height());
 }

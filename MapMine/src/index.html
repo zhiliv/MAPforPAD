@@ -26,19 +26,50 @@
           <button type="button" class="btn btn-primary button-menu-last">Закрыть</button>
         </div>
       </div>
-      <div class="col-9 blc-map">
-        <div class="row alert-success">
-          <div class="col-9 alert-success text-center">
+      <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 blc-map">
+          <div class="row alert-success scan-label">
+              <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 alert-success text-center">
+                <label for="">Для поиска меток нажмите "Сканировать"</label>
+              </div>
+              <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <button type="button" class="btn btn-large btn-block btn-success" onClick="ShowFormAddLabel()">Сканировать</button>
+              </div>
+            </div>
+
+        <div class="row alert-success alert-add">
+          <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 alert-success text-center">
             <label for="">Укажите точку и нажмите кнопку "Добавить"</label>
           </div>
-          <div class="col-3">
-            <button type="button" class="btn btn-large btn-block btn-success">button</button>
+          <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            <button type="button" class="btn btn-large btn-block btn-success" onClick="ShowFormAddLabel()">Добавить</button>
           </div>
         </div>
         <div id="map">
         </div>
       </div>
     </div>
+
+        <!-- Подтверждение действия для добавления метки -->
+        <div class="modal" tabindex="-1" role="dialog" id="form-add-label">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Подтверждение действия</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                  <button type="button" class="btn btn-primary" onClick="applyConfirmationAddLabel()">Да</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    
 
     <!-- Подтверждение действия для добавления метки -->
     <div class="modal" tabindex="-1" role="dialog" id="confirmation-add-label">
