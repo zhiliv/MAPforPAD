@@ -11,6 +11,8 @@ var listMarker = [];
 var marker;
 //обмен с WEbView
 var oWebViewInterface = window.nsWebViewInterface;
+var coords;
+var popup = L.popup();
 
 //при загрузке страницы
 $(document).ready(function() {
@@ -28,15 +30,77 @@ $(document).ready(function() {
  */
 function clickButtonMenu() {
     $('#newLabel').on('click', function() {
+      hideAlert('.alert');
         //отображение модлаьного окна для подтверждения
         $('#confirmation-add-label').modal();
-        //при нажатии на кнопку "ДА" у окна подтверждения действия добавления метки
     });
     $('#showAllLabel').on('click', function() {
+      hideAlert('.alert');
         //отображение модлаьного окна для подтверждения
         $('#confirmation-show-all-label').modal();
-        //при нажатии на кнопку "ДА" у окна подтверждения действия добавления метки
     });
+    $('#deleteSelectLabel').on('click', function() {
+$('#confirmation-delete-label').modal()
+    })
+}
+
+function deleteSelectLabel() {
+  
+}
+
+function applyConfirmationDeleteLabel(){
+  hideForm('#confirmation-show-all-label')
+  //оистка карты от меток
+  clearMapFromLabel();
+  //получение всех меток из БД
+  getAllLabelForDelete();
+}
+
+/**
+ * Получение всех меток
+ * @function getAllLabel
+ */
+function getAllLabelForDelete() {
+  //отправка события для получения меток
+  oWebViewInterface.emit('getAllLabel');
+  //прослушивание события для получения всех меток
+  oWebViewInterface.on('resultAllLabel', function(res) {
+      //добалвение всех меток на карту
+      addAllMarkerForDelete(res);
+  });
+}
+
+/**
+* Добавление всех маркеров
+* @function addAllMarker
+* @param {Array} list Массив со всеми метками из БД
+*/
+function addAllMarkerForDelete(list) {
+  //очищение массива для хранения маркеров
+  listMarker = [];
+  //проверка длины массива
+  if (list.length > 0) {
+      //обход всех щначений в цикле
+      for (i = 0; i <= list.length - 1; i++) {
+          //создание макркера на карте
+          createMarkerForDelete(list[i]);
+      }
+  }
+}
+
+
+/**
+ * Создание маркера
+ * @function createMarker
+ * @param {Object} data Данные о меткер
+ */
+function createMarkerForDelete(data) {
+  //создание нового маркера на карте
+  marker = L.marker([data.lat, data.lon]).addTo(map);
+  marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+ 
+  //доблавение маркера в массив
+  listMarker.push(marker);
 }
 
 /**
@@ -95,16 +159,15 @@ function hideAlert(element) {
  */
 function setHeightMap(element) {
     var heightAlert = $(element).height();
-    $('#map').height($(window).height() - (heightAlert + heightAlert * 0.2));
+    $('#map').height('88vh');
 }
-
-function ShowFormAddLabel() {}
 
 /**
  * При подтверждении "Показать все метки"
  * @function applyConfirmationShowAlLabel
  */
 function applyConfirmationShowAlLabel() {
+    hideForm('#confirmation-show-all-label')
     //оистка карты от меток
     clearMapFromLabel();
     //получение всех меток из БД
@@ -123,11 +186,6 @@ function getAllLabel() {
         //добалвение всех меток на карту
         addAllMarker(res);
     });
-    //addAllMarker(arrLabels)
-    /*     oWebViewInterface.on('resultAllLabels', function (res) {
-            console.log("TCL: getAllLabel -> res", res)
-
-        }) */
 }
 
 /**
@@ -151,11 +209,12 @@ function addAllMarker(list) {
 /**
  * Создание маркера
  * @function createMarker
- * @param {Object} data Данные о метке
+ * @param {Object} data Данные о меткер
  */
 function createMarker(data) {
     //создание нового маркера на карте
     marker = L.marker([data.lat, data.lon]).addTo(map);
+    //marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
     //доблавение маркера в массив
     listMarker.push(marker);
 }
@@ -225,11 +284,85 @@ function heightBody() {
     $('#map').height($(window).height());
 }
 
-// register listener for any event from native app
-/* oWebViewInterface.on('listUHF', function (data) {
-    console.log(data)
-});
+/**
+ * Поиск меток считывателем
+ * @function scanLabel
  */
+function scanLabel() {
+    if (arrFindLabel.length > 0) {
+        $('#form-some-label').modal('toggle');
+        for (i = 0; i <= arrFindLabel.length - 1; i++) {
+            $(
+                '<li class="list-group-item list-group-item-action" onClick="selectFindLabel(this)">' +
+                    arrFindLabel[i] +
+                    '</li>'
+            ).appendTo('#list-find-labels');
+        }
+    }
+    //Расскомментировать для обмена
+    /*     oWebViewInterface.emit('getUHF');
+    oWebViewInterface.on('resultUHF', function(list) {
+        console.log(list);
+    }); */
+}
+
+/**
+ * При выборе метки при поиске доавбления новой метки
+ * @function selectFindLabel
+ * @param {Object} element Выбранный элемент
+ */
+function selectFindLabel(element) {
+    //очистка списка
+    $('#list-find-labels').empty();
+    //удаление всех выдленеий элементов
+    $('#list-find-labels li').removeClass('active');
+    //добавление выдлеения для элемента
+    $(element).addClass('active');
+    //получение серийного номера
+    var SRN = $(element).text();
+    //скрыть форму
+    hideForm('#form-some-label');
+    //при нажатии на карту
+    //скрыть уведомление "Скинирование меток"
+    hideAlert('.scan-label');
+    showAlert('.alert-add');
+    map.on('click', function(e) {
+        //показать всплывающую поксказку
+        popup
+            .setLatLng(e.latlng)
+            .setContent('Метка будет находиться здесь')
+            .openOn(map);
+        //добавление значения координат в глобальную переменную
+        coords = { SRN: SRN, lat: e.latlng.lat, lon: e.latlng.lng };
+        //показать уведомление "добавить метку"
+      $('#addLabel').prop('disabled', false)
+    });
+
+    //отправка события через WebView интерфейс с серийным номером
+    /*     oWebViewInterface.emit('addNewLabel', SRN);
+    //прослышивания события с получение рузальтата добавленияновой метики
+    oWebViewInterface.on('resultAddNewLabel', function(res){
+
+      
+    }) */
+}
+
+function sendDataNewLabel() {
+    oWebViewInterface.on('resultSendDataNewLabel', function(resp) {
+      if(resp.err){
+        $('#errText').text(resp.err)
+        showAlert('.alert-err-add')
+        hideAlert('.alert-add');
+      }
+      else{
+        $('#successText').text(resp.data)
+        showAlert('.success')
+      }
+    });
+    oWebViewInterface.emit('sendDataNewLabel', coords);
+}
+
+
 
 var arrLabels = [
     {
@@ -359,3 +492,5 @@ var arrLabels = [
         lon: '12.172852'
     }
 ];
+
+var arrFindLabel = ['028800000000000000000403', '0288000000000000000003FA', '0101010021997FFFFF000029'];

@@ -15,7 +15,7 @@
   width: 100%;
 }
 
-.alert-add, .scan-label{
+.alert-add, .scan-label, .alert-err-add, .alert-ok{
   padding: 4px 0px 4px 0px;
   display: none;
 }
