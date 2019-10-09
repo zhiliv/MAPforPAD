@@ -148,6 +148,29 @@
         </div>
       </div>
     </div>
+
+        <!-- Подтверждение действия для добавления метки -->
+        <div class="modal" tabindex="-1" role="dialog" id="confirmation-delete-select-label">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Подтверждение действия</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <p class="text-info">Удалить метку с номером:
+                  <p id="uidLabel"></p>
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                <button type="button" class="btn btn-primary" onClick="applyDeleteSelectLabel()">Да</button>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
 
   <script src="js/jquery.js"></script>

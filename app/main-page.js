@@ -54,6 +54,7 @@ var setupWebViewInterface = async page => {
     onGetAllLabel();
     onScanLabel();
     onNewNewLabel();
+    onDeleteLabel()
 };
 
 /**
@@ -111,7 +112,7 @@ var onNewNewLabel = () => {
                 db.execSQL(
                     `INSERT INTO AllLabels (SRN, lat, lon) VALUES ('${data.SRN}', '${data.lat}', '${data.lon}')`,
                     (err, id) => {
-                        result.err = err
+                        result.err = err;
                         //добавление результата в результатный обхект
                         result.data = 'Успех: Метка успешно добавлена';
                     }
@@ -153,6 +154,24 @@ var onGetAllLabel = () => {
             //отправка полученниго массива по интерфейсу WebView
             oWebViewInterface.emit('resultAllLabel', arr);
         });
+    });
+};
+
+var onDeleteLabel = () => {
+    oWebViewInterface.on('DeleteSelectLabel', async SRN => {
+      let result = {err: null, data: null}
+        //выполнение запроса на добалвение
+        console.log(`DELETE FROM AllLabels WHERE SRN='${SRN}`)
+        db.execSQL(
+            `DELETE FROM AllLabels WHERE SRN='${SRN}'`,
+            (err, id) => {
+            console.log("TCL: onDeleteLabel -> err", err)
+                result.err = err;
+                //добавление результата в результатный обхект
+                result.data = 'Успех: Метка успешно удалена';
+                oWebViewInterface.emit('resultDeleteSelectLabel', result);
+            }
+        );
     });
 };
 
