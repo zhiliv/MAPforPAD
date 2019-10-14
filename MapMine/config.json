@@ -1,0 +1,10 @@
+{
+  "db": {
+    "host": "10.50.0.127",
+    "user": "map",
+    "port": "3306",
+    "password": "maps",
+    "database": "posicion",
+    "charset": "utf-8"
+  }
+}

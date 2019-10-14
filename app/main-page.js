@@ -54,7 +54,79 @@ var setupWebViewInterface = async page => {
     onGetAllLabel();
     onScanLabel();
     onNewNewLabel();
-    onDeleteLabel()
+    onDeleteLabel();
+    onInventoryLabel();
+    sendSettingDB();
+    saveSetting();
+    getDataToServer()
+};
+
+
+
+/**
+ * Получение данных с сервера
+ * @function getDataToServer
+  */
+ var getDataToServer =   () => {
+   oWebViewInterface.on('getDataToServer',async () => {
+    var promise = db.all(`SELECT * FROM setting`);
+    //выполнение запроса
+    await promise.then(async res => {
+    let config = await {
+      host: res[0][1],
+      user: res[0][2],
+      port: res[0][3],
+      password: res[0][4],
+      database: res[0][5]
+    }
+    console.log("TCL: getDataToServer -> config", config)
+     const mysql = await  require('mysql2')
+     var DB =await mysql.createPool(config)
+    await DB.connect()
+       DB.query('SELECT * FROM AllLabel', (err, rows) => {
+      console.log("TCL: getDataToServer -> rows", rows.length)
+        
+      })  
+   })
+ })
+}
+
+/**
+ * Сохранение настроек
+ * @function saveSetting
+ */
+var saveSetting = () => {
+    oWebViewInterface.on('saveSetting', async obj => {
+      await db.execSQL('DELETE FROM setting')
+      await db.execSQL(
+        `INSERT INTO setting (host, user, port, password, database) VALUES ('${obj.host}', '${obj.user}', '${obj.port}', '${obj.password}', '${obj.database}')`,
+        (err, id) => {
+            oWebViewInterface.emit('resultSaveSetting');
+        }
+    );
+    });
+};
+
+/**
+ * Отправка настроек БД
+ * @function sendSettingDB
+ */
+var sendSettingDB = () => {
+    oWebViewInterface.on('getSettingDB', async () => {
+      //формирование запроса для проверки наличия метки в БД
+      var promise = db.all(`SELECT * FROM setting`);
+      //выполнение запроса
+      promise.then(res => {
+      let obj = {
+        host: res[0][1],
+        user: res[0][2],
+        port: res[0][3],
+        password: res[0][4],
+        database: res[0][5]
+      }
+        oWebViewInterface.emit('resultGetSettingDB', obj);
+      })
+    });
 };
 
 /**
@@ -68,6 +140,21 @@ var onScanLabel = () => {
         UHF.getArr().then(list => {
             //отправить данные в WebVIEW
             oWebViewInterface.emit('resultUHF', list);
+        });
+    });
+};
+
+/**
+ * Получение меток со сканера
+ * @function onScanLabel
+ */
+var onInventoryLabel = () => {
+    //прослушиваение события для получения данных со считывателя
+    oWebViewInterface.on('getUHFInventory', () => {
+        //получение данных со считывателя
+        UHF.getArr().then(list => {
+            //отправить данные в WebVIEW
+            oWebViewInterface.emit('resultUHFInventory', list);
         });
     });
 };
@@ -159,19 +246,15 @@ var onGetAllLabel = () => {
 
 var onDeleteLabel = () => {
     oWebViewInterface.on('DeleteSelectLabel', async SRN => {
-      let result = {err: null, data: null}
+        let result = { err: null, data: null };
         //выполнение запроса на добалвение
-        console.log(`DELETE FROM AllLabels WHERE SRN='${SRN}`)
-        db.execSQL(
-            `DELETE FROM AllLabels WHERE SRN='${SRN}'`,
-            (err, id) => {
-            console.log("TCL: onDeleteLabel -> err", err)
-                result.err = err;
-                //добавление результата в результатный обхект
-                result.data = 'Успех: Метка успешно удалена';
-                oWebViewInterface.emit('resultDeleteSelectLabel', result);
-            }
-        );
+        console.log(`DELETE FROM AllLabels WHERE SRN='${SRN}`);
+        db.execSQL(`DELETE FROM AllLabels WHERE SRN='${SRN}'`, (err, id) => {
+            result.err = err;
+            //добавление результата в результатный обхект
+            result.data = 'Успех: Метка успешно удалена';
+            oWebViewInterface.emit('resultDeleteSelectLabel', result);
+        });
     });
 };
 

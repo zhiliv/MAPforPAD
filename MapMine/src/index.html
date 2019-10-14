@@ -19,12 +19,27 @@
         <h3 class="text-primary">Меню</h3>
         <hr>
         <div class="btn-group-vertical group-menu">
-          <button type="button" class="btn btn-primary button-menu" id="newLabel">Добавление метки</button>
-          <button type="button" class="btn btn-primary button-menu" id="showAllLabel">Показать все метки</button>
-          <button type="button" class="btn btn-primary button-menu" id="deleteSelectLabel">Удаление метки</button>
-          <button type="button" class="btn btn-primary button-menu">Поиск метки</button>
-          <button type="button" class="btn btn-primary button-menu">Настройка</button>
-          <button type="button" class="btn btn-primary button-menu-last">Закрыть</button>
+          <button type="button" class="btn btn-primary button-menu" id="newLabel">
+            Добавление метки
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="showAllLabel">
+            Показать все метки
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="deleteSelectLabel">
+            Удаление метки
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="inventory">
+            Поиск метки
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="setting">
+            Настройка
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="getDataToServer">
+            Получить данные с сервера
+          </button>
+          <button type="button" class="btn btn-primary button-menu" id="SendDataToServer">
+            Отправить данные на сервер
+          </button>
         </div>
       </div>
       <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 blc-map">
@@ -33,7 +48,7 @@
                 <label for="">Для поиска меток нажмите "Сканировать"</label>
               </div>
               <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                <button type="button" class="btn btn-large btn-block btn-success" onClick="scanLabel()">Сканировать</button>
+                <button type="button" class="btn btn-large btn-block btn-success" id="btn-scan" onClick="scanLabel()">Сканировать</button>
               </div>
             </div>
 
@@ -52,7 +67,7 @@
             </div>
           </div>
 
-          <div class="row alert-success alert alert-ok">
+          <div  class="row alert-success alert alert-ok">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alert-success text-center">
               <label id="successText"></label>
             </div>
@@ -85,6 +100,25 @@
             </div>
           </div>
     
+          <div class="modal" tabindex="-1" role="dialog" id="confirmation-syncGet-label">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Подтверждение действия</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Карта будет очищена от меток, продолжить?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                  <button type="button" class="btn btn-primary" onClick="getDataToServer()">Да</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
     <!-- Подтверждение действия для добавления метки -->
     <div class="modal" tabindex="-1" role="dialog" id="confirmation-add-label">
@@ -171,12 +205,104 @@
             </div>
           </div>
         </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="confirmation-inventory-label">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Подтверждение действия</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Карта будет очищена от меток, продолжить?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                  <button type="button" class="btn btn-primary" onClick="applyConfirmationInventoryLabel()">Да</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="modal" tabindex="-1" role="dialog" id="setting-modal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Настройки</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                  <div class="col-12">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          Адрес сервера БД
+                        </span>
+                      </div>
+                      <input type="text" aria-label="First name" class="form-control" id="host">
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          База данных
+                        </span>
+                      </div>
+                      <input type="text" aria-label="First name" class="form-control" id="database">
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                      <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          Пользователь
+                        </span>
+                      </div>
+                      <input type="text" aria-label="First name" class="form-control" id="user">
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                      <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          Пароль
+                        </span>
+                      </div>
+                      <input type="text" aria-label="First name" class="form-control" id="password">
+                    </div>
+                  </div>
+
+                </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                  <button type="button" class="btn btn-primary" id="save-setting">
+                    Сохранить
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
   </div>
 
   <script src="js/jquery.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/leaflet/leaflet.js"></script>
+  <script src="js/leaflet-color-markers.js"></script>
   <script src="js/nativescript-webview-interface.js"></script>
   <script src="js/func.js"></script>
 </body>

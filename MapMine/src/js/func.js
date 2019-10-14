@@ -29,29 +29,175 @@ $(document).ready(function() {
  * @functon clickButton
  */
 function clickButtonMenu() {
+  //при нажатии на кнопку "Добаление метки"
     $('#newLabel').on('click', function() {
+      //скрыть уведомление
         hideAlert('.alert');
         //отображение модлаьного окна для подтверждения
         $('#confirmation-add-label').modal();
     });
+    //при нажатии на кнопку "Покащать все метики"
     $('#showAllLabel').on('click', function() {
+      //скрыть уведомление
         hideAlert('.alert');
         //отображение модлаьного окна для подтверждения
         $('#confirmation-show-all-label').modal();
     });
+    //при нажатии на "Удаление метики"
     $('#deleteSelectLabel').on('click', function() {
+      //скрыть уведомление
+      hideAlert('.alert');
+      //отображение модлаьного окна для подтверждения
         $('#confirmation-delete-label').modal();
     });
+    //при нажатии на кнопку "Поиск метки"
+    $('#inventory').on('click', function(){
+      hideAlert('.alert');
+      $('#confirmation-inventory-label').modal()
+    })
+    $('#setting').on('click', function(){
+      hideAlert('.alert');
+      getSettingDB()
+      $('#setting-modal').modal()
+    })
+    $('#save-setting').on('click', function(){
+      var obj = {
+        host: $('#host').val(),
+        database: $('#database').val(),
+        user: $('#user').val(),
+        password: $('#password').val(),
+        port: $('#port').val()
+      }
+      oWebViewInterface.emit('saveSetting', obj)
+      oWebViewInterface.on('resultSaveSetting', function() {
+        $('#successText').text('Данные успешно обнолвены')
+        $('#alert-err-add').show();
+      })
+    })
+    $('#getDataToServer').on('click', function(){
+      $('#confirmation-syncGet-label').modal()
+
+      getDataToServer()
+    })
 }
 
-function deleteSelectLabel() {}
+function getDataToServer(){
+    oWebViewInterface.emit('getDataToServer')
+    /*   oWebViewInterface.on('resultGetDataToServer', function(){
+    
+      }) */
 
+}
+
+
+/**
+ * Получение напстроек БД
+ * @function getSettingDB
+  */
+ function getSettingDB(){
+  oWebViewInterface.on('resultGetSettingDB', function(config){
+    console.log(config)
+   $('#host').val(config.host)
+   $('#database').val(config.database)
+   $('#user').val(config.user)
+   $('#password').val(config.password)
+  })
+   oWebViewInterface.emit('getSettingDB')
+
+ }
+
+
+/**
+ * применение инвентаризации метки
+ * @function applyConfirmationInventoryLabel
+  */
+function applyConfirmationInventoryLabel(){
+  $('#confirmation-inventory-label').modal('toggle');
+  getAllLabelForInventory()
+}
+
+/**
+ * Получение всех меток
+ * @function getAllLabel
+ */
+function getAllLabelForInventory() {
+  //отправка события для получения меток
+  oWebViewInterface.emit('getAllLabel');
+  //прослушивание события для получения всех меток
+  oWebViewInterface.on('resultAllLabel', function(res) {
+      //добалвение всех меток на карту
+      addAllMarkerForInventory(res);
+  });
+}
+
+/**
+ * Подтверждение удаления метки
+ * @function applyConfirmationDeleteLabel
+  */
 function applyConfirmationDeleteLabel() {
     hideForm('#confirmation-delete-label');
     //оистка карты от меток
     clearMapFromLabel();
     //получение всех меток из БД
-    getAllLabelForDelete();
+    addAllMarkerForDelete();
+}
+
+/**
+ * Добавление всех маркеров
+ * @function addAllMarker
+ * @param {Array} list Массив со всеми метками из БД
+ */
+function addAllMarkerForInventory(list) {
+  //очищение массива для хранения маркеров
+  listMarker = [];
+  //проверка длины массива
+  if (list.length > 0) {
+      //обход всех щначений в цикле
+      for (i = 0; i <= list.length - 1; i++) {
+          //создание макркера на карте
+          createMarkerForInventiry(list[i]);
+      }
+  }
+}
+
+/**
+ * Создание маркера
+ * @function createMarker
+ * @param {Object} data Данные о меткер
+ */
+function createMarkerForInventiry(data) {
+  //создание нового маркера на карте
+  marker = L.marker([data.lat, data.lon]).addTo(map);
+  //добалвение всплывающей подсказки для маркера
+  marker.bindPopup('<h5>Найти метку?</h5><p class="text-center"><button type="button" class="btn-sm btn-success inventoryLabel" lat="'+data.lat+'" lon="'+data.lon+'" SRN="'+data.SRN+'">Найти</button></p>'
+  ).openPopup();
+  //при нажатии на уопку "Удалить"
+   $('.inventoryLabel').on('click', function(el){
+     hideAlert('.alert-err-add ')
+    oWebViewInterface.emit('getUHFInventory');
+    //прослушивание события для получения всех меток
+    oWebViewInterface.on('resultUHFInventory', function(list) {
+      for(var i = 0; i <= list.length-1; i++){
+        if(list[i]== $(el.target).attr('SRN')){
+          $('#successText').text('Метка найдена')
+          showAlert('.alert-ok')
+          marker.remove()
+          var lat = $(el.target).attr('lat')
+          var lon = $(el.target).attr('lon')
+          var greenIcon = new L.Icon({
+            iconUrl: './markers/marker-icon-2x-green.png',
+            shadowUrl: './markers/marker-icon-green.png',
+            iconSize: [25, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [25, 41]
+          });
+          marker = L.marker([lat, lon],  {icon: greenIcon}).addTo(map);
+        }
+      }
+    }); 
+  }) 
+  //доблавение маркера в массив
+  listMarker.push(marker);
 }
 
 /**
@@ -94,35 +240,52 @@ function addAllMarkerForDelete(list) {
 function createMarkerForDelete(data) {
     //создание нового маркера на карте
     marker = L.marker([data.lat, data.lon]).addTo(map);
+    //добалвение всплывающей подсказки для маркера
     marker.bindPopup('<h5>Удалить метку?</h5><p class="text-center"><button type="button" class="btn-sm btn-danger deleteLabel" SRN="'+data.SRN+'">Удалить</button></p>'
     ).openPopup();
+    //при нажатии на уопку "Удалить"
     $('.deleteLabel').on('click', function(el){
+      //получение идентификатора метки
       $('#uidLabel').text($(el.target).attr('SRN'))
+      //вызов формы подтверждения удаления метки
       $('#confirmation-delete-select-label').modal()
     })
-$('#confirmation-delete-select-label')
     //доблавение маркера в массив
     listMarker.push(marker);
 }
 
+/**
+ * Подтверждение удаления метки
+ * @function applyDeleteSelectLabel
+  */
 function applyDeleteSelectLabel(){
+  //если модальное окно отыкрыто, закрыть
   $('#confirmation-delete-select-label').modal('toggle');
       //отправка события для получения меток
+      //получение идентификатора метки
       var SRN = $('#uidLabel').text();
-      console.log(SRN)
+      //отправка события для удаления метки
       oWebViewInterface.emit('DeleteSelectLabel', SRN);
       //прослушивание события для получения всех меток
       oWebViewInterface.on('resultDeleteSelectLabel', function(resp) {
           //добалвение всех меток на карту
           if(resp.err){
+            //заполняем текст ошибки
             $('#errText').text(resp.err);
+            //покаать уведомление
             showAlert('.alert-err-add');
           }
           else{
+            //текст для успешного выполнения
             $('#successText').text(resp.data);
+            //показать уведомление
             showAlert('.alert-ok');
+            //очистка карты
             clearMapFromLabel();
+            //получение всех меток
             getAllLabel()
+            //установка высоты карты
+            setHeightMap();
           }
       });
 }
@@ -164,6 +327,7 @@ function hideForm(id) {
 function showAlert(element) {
     //отобразить элемент
     $(element).css('display', 'flex');
+    $('#map').height('86vh')
 }
 
 /**
@@ -313,21 +477,28 @@ function heightBody() {
  * @function scanLabel
  */
 function scanLabel() {
-    if (arrFindLabel.length > 0) {
-        $('#form-some-label').modal('toggle');
-        for (i = 0; i <= arrFindLabel.length - 1; i++) {
-            $(
-                '<li class="list-group-item list-group-item-action" onClick="selectFindLabel(this)">' +
-                    arrFindLabel[i] +
-                    '</li>'
-            ).appendTo('#list-find-labels');
-        }
-    }
-    //Расскомментировать для обмена
-    /*     oWebViewInterface.emit('getUHF');
-    oWebViewInterface.on('resultUHF', function(list) {
-        console.log(list);
-    }); */
+  $('#btn-scan').prop('disabled', true)
+  $('#map').prop('disabled', true)
+  oWebViewInterface.on('resultUHF', function(list) {
+    $('#btn-scan').prop('disabled', false)
+    $('#map').prop('disabled', false)
+    if (list.length > 0) {
+      $('#form-some-label').modal('toggle');
+      for (i = 0; i <= list.length - 1; i++) {
+          $(
+              '<li class="list-group-item list-group-item-action" onClick="selectFindLabel(this)">' +
+              list[i] +
+                  '</li>'
+          ).appendTo('#list-find-labels');
+      }
+  }
+  else{
+    hideAlert('.blc-map')
+    $('#errText').text('Меток не обнаружено')
+    showAlert('.alert-err-add')
+  }
+  }); 
+    oWebViewInterface.emit('getUHF');
 }
 
 /**
@@ -371,148 +542,31 @@ function selectFindLabel(element) {
     }) */
 }
 
+
+/**
+ * Отправка данных на серверную часть для удаления метки
+ * @function sendDataNewLabel
+  */
 function sendDataNewLabel() {
+  //прослушивание события для получения результата удаления метики
     oWebViewInterface.on('resultSendDataNewLabel', function(resp) {
+      //проверка на ошибки
         if (resp.err) {
+          //заполнение текста ошибки
             $('#errText').text(resp.err);
+            //показать уведомление
             showAlert('.alert-err-add');
+            //скрыть уведомеление
             hideAlert('.alert-add');
         } else {
+          //скрыть уведомление
            hideAlert('.alert-add')
+           //текст успешного выполнения
             $('#successText').text(resp.data);
+            //показать ведомеление
             showAlert('.alert-ok');
         }
     });
+    //отправка события для удаления мтеки
     oWebViewInterface.emit('sendDataNewLabel', coords);
 }
-
-var arrLabels = [
-    {
-        id: 23,
-        SRN: '028800000000000000000857',
-        lat: '81.106811',
-        lon: '4.174805'
-    },
-    {
-        id: 9,
-        SRN: '028800000000000000000415',
-        lat: '25.005973',
-        lon: '-31.992188'
-    },
-    {
-        id: 10,
-        SRN: '028800000000000000000414',
-        lat: '29.53523',
-        lon: '-38.935547'
-    },
-    {
-        id: 12,
-        SRN: '028800000000000000000413',
-        lat: '47.813155',
-        lon: '-14.150391'
-    },
-    {
-        id: 5,
-        SRN: '028800000000000000000411',
-        lat: '79.286313',
-        lon: '72.070313'
-    },
-    {
-        id: 6,
-        SRN: '028800000000000000000410',
-        lat: '80.459509',
-        lon: '70.488281'
-    },
-    {
-        id: 19,
-        SRN: '02880000000000000000040F',
-        lat: '83.287985',
-        lon: '57.041016'
-    },
-    {
-        id: 8,
-        SRN: '028800000000000000000409',
-        lat: '81.634149',
-        lon: ' -6.064453'
-    },
-    {
-        id: 7,
-        SRN: '028800000000000000000408',
-        lat: '84.289079',
-        lon: '-7.250977'
-    },
-    {
-        id: 13,
-        SRN: '028800000000000000000407',
-        lat: '45.890008',
-        lon: '7.03125'
-    },
-    {
-        id: 11,
-        SRN: '028800000000000000000406',
-        lat: '43.707594',
-        lon: '3.779297'
-    },
-    {
-        id: 4,
-        SRN: '028800000000000000000405',
-        lat: '58.562523',
-        lon: '-1.40625'
-    },
-    {
-        id: 18,
-        SRN: '0288000000000000000003FE',
-        lat: '81.569968',
-        lon: '59.106445'
-    },
-    {
-        id: 16,
-        SRN: '0288000000000000000003FC',
-        lat: '81.518272',
-        lon: '52.602539'
-    },
-    {
-        id: 17,
-        SRN: '0288000000000000000003F7',
-        lat: '83.720353',
-        lon: '50.581055'
-    },
-    {
-        id: 21,
-        SRN: '0288000000000000000003F6',
-        lat: '83.079373',
-        lon: '59.941406'
-    },
-    {
-        id: 14,
-        SRN: '0288000000000000000003F4',
-        lat: '81.47278',
-        lon: '49.658203'
-    },
-    {
-        id: 22,
-        SRN: '0288000000000000000003F1',
-        lat: '81.589274',
-        lon: '2.8125'
-    },
-    {
-        id: 20,
-        SRN: '0288000000000000000003F0',
-        lat: '81.697844',
-        lon: '62.050781'
-    },
-    {
-        id: 15,
-        SRN: '0288000000000000000003EF',
-        lat: '83.895719',
-        lon: '47.109375'
-    },
-    {
-        id: 24,
-        SRN: '0101010021997FFFFF000028',
-        lat: '80.746492',
-        lon: '12.172852'
-    }
-];
-
-var arrFindLabel = ['028800000000000000000403', '0288000000000000000003FA', '0101010021997FFFFF000029'];
