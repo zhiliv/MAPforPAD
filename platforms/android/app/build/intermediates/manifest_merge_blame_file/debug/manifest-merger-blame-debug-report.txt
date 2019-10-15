@@ -38,7 +38,7 @@
 23        android:allowBackup="true"
 23-->C:\develop\MAPforPAD\platforms\android\app\src\main\AndroidManifest.xml:19:3-29
 24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-24-->[androidx.core:core:1.1.0] C:\Users\zhilnikov_in\.gradle\caches\transforms-2\files-2.1\563be99a7f8ba6717b67ce50a8a4b6a6\core-1.1.0\AndroidManifest.xml:24:18-86
+24-->[androidx.core:core:1.0.1] C:\Users\zhilnikov_in\.gradle\caches\transforms-2\files-2.1\0ce66f28f15d428e7cb22ee7b459b6ef\core-1.0.1\AndroidManifest.xml:22:18-86
 25        android:debuggable="true"
 26        android:icon="@drawable/icon"
 26-->C:\develop\MAPforPAD\platforms\android\app\src\main\AndroidManifest.xml:20:3-32

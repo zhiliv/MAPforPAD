@@ -58,37 +58,45 @@ var setupWebViewInterface = async page => {
     onInventoryLabel();
     sendSettingDB();
     saveSetting();
-    getDataToServer()
+    getDataToServer();
+    getSerever();
 };
 
-
+var getSerever = () => {
+    oWebViewInterface.on('getSerever', function() {
+        var promise = db.all(`SELECT * FROM setting`);
+        //выполнение запроса
+        promise.then(res => {
+            let obj = {
+                host: res[0][1],
+                user: res[0][2],
+                port: res[0][3],
+                password: res[0][4],
+                database: res[0][5]
+            };
+            oWebViewInterface.emit('resultGetSerever', obj.host);
+        });
+    });
+};
 
 /**
  * Получение данных с сервера
  * @function getDataToServer
-  */
- var getDataToServer =   () => {
-   oWebViewInterface.on('getDataToServer',async () => {
-    var promise = db.all(`SELECT * FROM setting`);
-    //выполнение запроса
-    await promise.then(async res => {
-    let config = await {
-      host: res[0][1],
-      user: res[0][2],
-      port: res[0][3],
-      password: res[0][4],
-      database: res[0][5]
-    }
-    console.log("TCL: getDataToServer -> config", config)
-     const mysql = await  require('mysql2')
-     var DB =await mysql.createPool(config)
-    await DB.connect()
-       DB.query('SELECT * FROM AllLabel', (err, rows) => {
-      console.log("TCL: getDataToServer -> rows", rows.length)
-        
-      })  
-   })
- })
+ */
+var getDataToServer = () => {
+    oWebViewInterface.on('getDataToServer', async () => {
+      var promise = db.all(`SELECT * FROM setting`);
+      //выполнение запроса
+      promise.then(res => {
+          let obj = {
+              host: res[0][1],
+              user: res[0][2],
+              port: res[0][3],
+              password: res[0][4],
+              database: res[0][5]
+          };
+          });
+    });
 }
 
 /**
@@ -97,13 +105,13 @@ var setupWebViewInterface = async page => {
  */
 var saveSetting = () => {
     oWebViewInterface.on('saveSetting', async obj => {
-      await db.execSQL('DELETE FROM setting')
-      await db.execSQL(
-        `INSERT INTO setting (host, user, port, password, database) VALUES ('${obj.host}', '${obj.user}', '${obj.port}', '${obj.password}', '${obj.database}')`,
-        (err, id) => {
-            oWebViewInterface.emit('resultSaveSetting');
-        }
-    );
+        await db.execSQL('DELETE FROM setting');
+        await db.execSQL(
+            `INSERT INTO setting (host, user, port, password, database) VALUES ('${obj.host}', '${obj.user}', '${obj.port}', '${obj.password}', '${obj.database}')`,
+            (err, id) => {
+                oWebViewInterface.emit('resultSaveSetting');
+            }
+        );
     });
 };
 
@@ -113,19 +121,21 @@ var saveSetting = () => {
  */
 var sendSettingDB = () => {
     oWebViewInterface.on('getSettingDB', async () => {
-      //формирование запроса для проверки наличия метки в БД
-      var promise = db.all(`SELECT * FROM setting`);
-      //выполнение запроса
-      promise.then(res => {
-      let obj = {
-        host: res[0][1],
-        user: res[0][2],
-        port: res[0][3],
-        password: res[0][4],
-        database: res[0][5]
-      }
-        oWebViewInterface.emit('resultGetSettingDB', obj);
-      })
+        //формирование запроса для проверки наличия метки в БД
+        var promise = db.all(`SELECT * FROM setting`);
+        //выполнение запроса
+        promise.then(res => {
+        console.log("TCL: sendSettingDB -> res", res)
+            let obj = {
+                host: res[0][1],
+                user: res[0][2],
+                port: res[0][3],
+                password: res[0][4],
+                database: res[0][5]
+            };
+            console.log("TCL: sendSettingDB -> obj", obj)
+            oWebViewInterface.emit('resultGetSettingDB', obj);
+        });
     });
 };
 

@@ -14,8 +14,6 @@
   "dependencies": {
     "async": "^3.1.0",
     "fs": "^0.0.1-security",
-    "mysql": "^2.17.1",
-    "mysql2": "^1.7.0",
     "nativescript-sqlite": "^2.3.3",
     "nativescript-theme-core": "^2.0.22",
     "nativescript-webview-interface": "^1.4.3",

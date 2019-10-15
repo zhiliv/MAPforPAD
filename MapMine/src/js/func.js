@@ -76,19 +76,28 @@ function clickButtonMenu() {
     })
     $('#getDataToServer').on('click', function(){
       $('#confirmation-syncGet-label').modal()
-
       getDataToServer()
     })
 }
 
+
 function getDataToServer(){
     oWebViewInterface.emit('getDataToServer')
-    /*   oWebViewInterface.on('resultGetDataToServer', function(){
-    
-      }) */
-
-}
-
+ }
+ 
+ /* отправка POST запросов */
+ function getDataOfBase(srv){
+/*    const result = $.ajax({
+     type: 'POST',
+     url:  'http://'+srv+'/get',
+     response: 'XML',
+     data: { }
+   });
+   console.log(result)
+   return result; */
+ };
+ 
+ 
 
 /**
  * Получение напстроек БД

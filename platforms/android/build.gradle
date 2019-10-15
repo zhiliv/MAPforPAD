@@ -2,8 +2,6 @@
 
 buildscript {
 
-
-
     def initialize = { ->
         def userDir = "${rootProject.projectDir}/../.."
         apply from: "$rootDir/user_properties_reader.gradle"
@@ -31,8 +29,6 @@ allprojects {
         google()
         jcenter()
     }
-
-
     beforeEvaluate { project ->
         if (rootProject.hasProperty("userDefinedGradleProperties")) {
             rootProject.ext.userDefinedGradleProperties.each { entry ->
