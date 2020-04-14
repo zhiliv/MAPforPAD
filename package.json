@@ -13,7 +13,7 @@
   "repository": "<fill-your-repository-here>",
   "dependencies": {
     "async": "^3.1.0",
-    "fs": "^0.0.1-security",
+    "fs": "^0.0.2",
     "nativescript-sqlite": "^2.3.3",
     "nativescript-theme-core": "^2.0.22",
     "nativescript-webview-interface": "^1.4.3",
